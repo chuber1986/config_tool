@@ -1,0 +1,5 @@
+json
+tox
+pytest
+pylint-json2html
+coverage

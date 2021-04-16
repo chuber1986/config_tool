@@ -87,7 +87,7 @@ For plain `json` no additional setup is required.
 ### From source
 Install the ConfigTool via `pip` from the GitLab Repository:
 ```bash
-python -m pip install https://git.silicon-austria.com/huberc/config_tool.git
+python -m pip install https://git.silicon-austria.com/embedded-systems/ru-eai/tools/config_tool.git
 ```
 
 ### Testing

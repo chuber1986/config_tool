@@ -36,9 +36,6 @@ class Config:
     '--config', environment variable 'CONFIG_FILE' or if exists the default
     path '.configs/config.json' will be used.
 
-    If non of the above option is used commandline arguments are
-    parsed as parameters.
-
     ## Features:
 
     ### Parent file:
@@ -76,12 +73,18 @@ class Config:
             args, override_args = parse_args(expect_file=True)
             cfile = args.config
 
-            if cfile is None:
+            if cfile:
+                LOG.debug('Load config from file %s, specified in CLI argument.', cfile)
+            else:
                 cfile = os.getenv(ENV_CONFIG_NAME, None)
 
-            if cfile is None:
+            if cfile:
+                LOG.debug('Load config from file %s, specified in environment variable.', cfile)
+            else:
                 cfile = Path('.', 'configs', 'config.json')
+                LOG.debug('Load config from file from fallback path.')
         else:
+            LOG.debug('Load config from file %s, specified in parameter.', filename)
             args, override_args = parse_args(expect_file=False)
             cfile = filename
 
@@ -109,11 +112,13 @@ class Config:
     def _import_value_rec(self, value, cfile):
         if isinstance(value, str) and IMPORT_TAG in value:
             try:
+                LOG.debug('Import object: %s', value[len(IMPORT_TAG):])
                 value = import_object(value[len(IMPORT_TAG):])
             except ModuleNotFoundError:
                 LOG.error('Unable to import "%s"', value, exc_info=True)
 
         elif isinstance(value, str) and INCLUDE_TAG in value:
+            LOG.debug('Include object: %s', value[len(INCLUDE_TAG):])
             base_path = Path(value[len(INCLUDE_TAG):]).relative_to(cfile.parent)
             value = Config(str(base_path)).__dict__
 
@@ -179,6 +184,7 @@ class Config:
             for name, value in nv_pairs:
                 if PARENT_CONFIG_TAG == name and value is not None:
                     base_path = Path(value).relative_to(cfile.parent)
+                    LOG.debug('Load parent config: %s', base_path)
                     self._load_config_file(base_path)
                 else:
                     self._set_attribute(name, value, cfile)
@@ -191,6 +197,8 @@ class Config:
         for key, val in override.items():
             name = key[2:] if '--' in key else key  # remove leading --
             value = val if val is None or val.startswith('"') or val.startswith("'") else try_to_number(val)
+            LOG.debug('Override key "%s" with value "%s"', name, value)
+
             value = evaluate(value)
 
             current = self.__dict__
@@ -231,6 +239,7 @@ class Config:
 
         :param file: filename to save the configuration to
         """""
+        LOG.debug('Safe config to %s', filename)
         writer = get_file_writer(Path(filename).suffix)
         with open(filename, 'w') as file:
             writer(self.__dict__, file, indent=2, sort_keys=True)

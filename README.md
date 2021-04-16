@@ -7,9 +7,6 @@ The config filename can be provided via constructor argument, commandline
 argument `--config`, environment variable `CONFIG_FILE` or if exists the 
 default path `.configs/config.json` will be used.
 
-If non of the above option is used commandline arguments are
-parsed as parameters.
-
 ## Features:
 ### Parent file:
 A config file can specify a parent config from which it inherits. First,

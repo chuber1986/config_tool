@@ -1,5 +1,7 @@
 # ConfigTool
 
+Forked from https://git.silicon-austria.com/embedded-systems/ru-eai/tools/config_tool
+
 Read a configuration file from JSON, JSON5 or YAML. Values can be overwritten by console arguments.
 The tool automatically imports classes and creates object instances.
 
@@ -87,7 +89,7 @@ For plain `json` no additional setup is required.
 ### From source
 Install the ConfigTool via `pip` from the GitLab Repository:
 ```bash
-python -m pip install https://git.silicon-austria.com/embedded-systems/ru-eai/tools/config_tool.git
+python -m pip install https://github.com/chuber1986/config_tool.git
 ```
 
 ### Testing
@@ -179,3 +181,5 @@ c1b = cfg.get('c')[1]['b']
 # Otherwise return MyClass(a=1, b=3, c=4)
 e = cfg.get('e', default=[], instance=True, b=3, c=4)
 ```
+
+Developed at &copy;Silicon Austria Labs GmbH
